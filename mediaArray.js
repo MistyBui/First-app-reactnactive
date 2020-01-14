@@ -1,8 +1,4 @@
-import React from 'react';
-import {StyleSheet, Text, View, FlatList, TouchableOpacity, Image} from 'react-native';
-import List from './components/List'
-
-const mediaArray = [
+export const mediaArray = [
   {
     'key': '0',
     'title': 'Title 1',
@@ -31,23 +27,3 @@ const mediaArray = [
     'filename': 'http://placekitten.com/2039/1920',
   },
 ];
-
-
-const App = () => {
-  return (
-    <View style={styles.container}>
-      <List mediaArray={mediaArray} />
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
- container: {
-   flex: 1,
-   backgroundColor: '#fff',
-   alignItems: 'center',
-   justifyContent: 'center',
- },
-});
-
-export default App;
