@@ -9,12 +9,12 @@ const ListItem = (props) => {
   return (
     <TouchableOpacity style={styles.touch}>
       <Image
-        style={{width: 100, height: 100}}
+        style={{width: 100, height: 100, borderRadius: 50, marginTop: 25}}
         source={{uri: singleMedia.thumbnails.w160}}
       />
       <View style={styles.text}>
-        <Text style={{fontWeight: 'bold'}}>{singleMedia.title}</Text>
-        <Text style={{textAlign:"justify", width: 270}}>{singleMedia.description}</Text>
+        <Text style={styles.title}>{singleMedia.title}</Text>
+        <Text style={{textAlign:"justify", width: 270, marginBottom: 5}}>{singleMedia.description}</Text>
       </View>
     </TouchableOpacity>
   )
@@ -36,13 +36,24 @@ const styles = StyleSheet.create({
   touch: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor:'#808080',
+    backgroundColor:'#E8E8E8',
     marginBottom: 5,
     padding: 10,
+    borderWidth: 1,
+    borderRadius: 10,
+    justifyContent: 'center',
+    elevation: 1
  },
- text: {
+  text: {
     paddingLeft:10,
- }
+  },
+
+  title: {
+    fontWeight: 'bold',
+    color: 'orange',
+    margin: 5,
+    fontSize: 20
+  }
 });
 
 export default ListItem;

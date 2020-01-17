@@ -1,6 +1,8 @@
 import React from 'react';
-import {StyleSheet, Text, View, FlatList, TouchableOpacity, Image} from 'react-native';
+import {StyleSheet, Text, View, Image, StatusBar} from 'react-native';
 import List from './components/List'
+import Constants from 'expo-constants';
+
 
 const mediaArray = [
   {
@@ -35,19 +37,45 @@ const mediaArray = [
 
 const App = () => {
   return (
-    <View style={styles.container}>
-      <List mediaArray={mediaArray} />
+    <View style={{flex:1 ,flexDirection: 'column'}}>
+      <View style={styles.statusBar}></View>
+      <View style= {styles.header}>
+        <Image style={styles.catImg} source={require('./assets/header.jpg')}/>
+        <Text style={styles.catTxt}>1435 Homeless Cats</Text>
+      </View>
+      <View style={styles.container}>
+        <List mediaArray={mediaArray} />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
- container: {
-   flex: 1,
-   backgroundColor: '#fff',
-   alignItems: 'center',
-   justifyContent: 'center',
- },
+  statusBar:{
+    backgroundColor: "#C2185B",
+    height: Constants.statusBarHeight,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  header:{
+    marginBottom: 10
+  },
+  catImg:{
+    height: 300,
+    width:'auto',
+  },
+  catTxt: {
+    fontWeight: "bold",
+    backgroundColor: 'rgba(192,192,192,0.4)',
+    width: 130,
+    position: 'absolute',
+    top: 100,
+    left: 30,
+  }
 });
 
 export default App;
