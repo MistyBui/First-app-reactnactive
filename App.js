@@ -71,10 +71,14 @@ const styles = StyleSheet.create({
   catTxt: {
     fontWeight: "bold",
     backgroundColor: 'rgba(192,192,192,0.4)',
-    width: 130,
+    width: 150,
     position: 'absolute',
     top: 100,
-    left: 30,
+    left: 0,
+    paddingLeft: 10,
+    paddingTop: 10,
+    paddingRight: 10,
+    paddingBottom: 10,
   }
 });
 
