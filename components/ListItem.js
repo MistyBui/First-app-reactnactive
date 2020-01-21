@@ -8,7 +8,17 @@ const ListItem = (props) => {
   console.log(props.singleMedia);
   const singleMedia = props.singleMedia;
   return (
-    <TouchableOpacity style={styles.touch}>
+    <TouchableOpacity
+      style={styles.touch}
+      onPress={
+        () => {
+          props.navigation.push('Single',{
+              file_id: singleMedia.file_id,
+              title: singleMedia.title,
+              filename: singleMedia.filename
+          });
+        }
+      }>
       <Image
         style={{width: 100, height: 100}}
         source={{uri: mediaUrl + props.singleMedia.filename}}
