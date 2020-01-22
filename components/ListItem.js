@@ -6,7 +6,6 @@ import AsyncImage from './AsyncImage';
 const mediaUrl ='http://media.mw.metropolia.fi/wbma/uploads/';
 
 const ListItem = (props) => {
-  console.log(props.singleMedia);
   const singleMedia = props.singleMedia;
   return (
     <TouchableOpacity
@@ -31,10 +30,10 @@ const ListItem = (props) => {
     </TouchableOpacity>
   )
 }
-
 ListItem.propTypes = {
   singleMedia: PropTypes.object,
 };
+
 
 const styles = StyleSheet.create({
 
