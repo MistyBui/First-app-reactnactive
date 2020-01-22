@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import PropTypes from 'prop-types';
+import AsyncImage from './AsyncImage';
 
 const mediaUrl ='http://media.mw.metropolia.fi/wbma/uploads/';
 
@@ -19,7 +20,7 @@ const ListItem = (props) => {
           });
         }
       }>
-      <Image
+      <AsyncImage
         style={{width: 100, height: 100}}
         source={{uri: mediaUrl + props.singleMedia.filename}}
       />
