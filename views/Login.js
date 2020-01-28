@@ -56,7 +56,7 @@ const Login = (props) => { // props is needed for navigation
             <Item>
             <Input
                 autoCapitalize='none'
-                placeholder='email'
+                placeholder='password'
                 onChangeText={handlePasswordChange}
                 secureTextEntry={true}
               />

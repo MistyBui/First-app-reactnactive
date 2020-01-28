@@ -60,28 +60,14 @@ const register = async (data) => {
     }
 };
 
-/*const getAvatar = () => {
-  const [image, setImage] = useState([]);
-  const fetchUrl = async () => {
-    try {
-      const response = await fetch(apiUrl + 'media/user');
-      const json = await response.json();
-      const result = await Promise.all(json.files.filter(async (item) => {
-        const tnResponse = await fetch(apiUrl + 'media/user' + item.file_id);
-        return await tnResponse.json();
-      }));
-      console.log('apihooks', result);
-      setImage(result);
-      setLoading(false);
-    } catch (e) {
-      console.log('error', e.message);
+const avatar = async (userId) => {
+  try {
+    const response = await fetch(apiUrl + 'tags/avatar_' + userId);
+    return await response.json();
+  } catch (e) {
+    console.log('error', e.message);
     }
-  };
-  useEffect(() => {
-    fetchUrl();
-  }, []);
-  return [data, loading];
-};*/
+};
 
 
-export {getAllMedia, login, register};
+export {getAllMedia, login, register, avatar};
