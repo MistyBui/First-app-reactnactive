@@ -1,11 +1,6 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  AsyncStorage,
-} from 'react-native';
+import { AsyncStorage} from 'react-native';
+import {Container, Header, Content,View, Text, Button, Form, Item, Input, Title} from 'native-base';
 import PropTypes from 'prop-types';
 import { login, register } from "../hooks/APIHook";
 import FormTextInput from "../components/FormTextInput";
@@ -43,68 +38,81 @@ const Login = (props) => { // props is needed for navigation
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.form}>
-      <Text>Login</Text>
-         <FormTextInput
-           autoCapitalize='none'
-           placeholder='username'
-           onChangeText={handleUsernameChange}
-         />
-         <FormTextInput
-           autoCapitalize='none'
-           placeholder='email'
-           onChangeText={handlePasswordChange}
-           secureTextEntry={true}
-         />
-         <Button title="Sign in!" onPress={signInAsync} />
-      </View>
+    <Container>
+      <Header />
+        <Content>
+        <Form>
+          <View>
+            <Title>
+              <Text>Login</Text>
+            </Title>
+            <Item>
+              <Input
+                autoCapitalize='none'
+                placeholder='username'
+                onChangeText={handleUsernameChange}
+              />
+            </Item>
+            <Item>
+            <Input
+                autoCapitalize='none'
+                placeholder='email'
+                onChangeText={handlePasswordChange}
+                secureTextEntry={true}
+              />
+            </Item>
 
-      <View style={styles.form}>
-         <Text>Register</Text>
-         <FormTextInput
-           autoCapitalize='none'
-           placeholder='username'
-           onChangeText={handleUsernameChange}
-         />
-         <FormTextInput
-           autoCapitalize='none'
-           placeholder='email'
-           onChangeText={handleEmailChange}
-         />
-         <FormTextInput
-           autoCapitalize='none'
-           placeholder='fullname'
-           onChangeText={handleFullnameChange}
-         />
-         <FormTextInput
-           autoCapitalize='none'
-           placeholder='password'
-           onChangeText={handlePasswordChange}
-           secureTextEntry={true}
-         />
-         <Button title="Register" onPress={registerAsync} />
-         <Text>{error}</Text>
-       </View>
-     </View>
+              <Button block onPress={signInAsync}><Text>Sign in!</Text></Button>
+            </View>
+
+            <View>
+              <Title>
+                <Text>Register</Text>
+              </Title>
+
+              <Item>
+                <Input
+                autoCapitalize='none'
+                placeholder='username'
+                onChangeText={handleUsernameChange}
+              />
+              </Item>
+              <Item>
+              <Input
+                autoCapitalize='none'
+                placeholder='email'
+                onChangeText={handleEmailChange}
+              />
+              </Item>
+
+              <Item>
+              <Input
+                autoCapitalize='none'
+                placeholder='fullname'
+                onChangeText={handleFullnameChange}
+              />
+              </Item>
+
+              <Item>
+                <Input
+                autoCapitalize='none'
+                placeholder='password'
+                onChangeText={handlePasswordChange}
+                secureTextEntry={true}
+                />
+              </Item>
+              <Button block onPress={registerAsync}><Text>Register</Text></Button>
+              <Text>{error}</Text>
+            </View>
+          </Form>
+      </Content>
+    </Container>
+
   );
 };
 
 
 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 40,
-  },
-  form:{
-    padding: 20,
-  }
-});
 
 // proptypes here
 Login.propTypes = {

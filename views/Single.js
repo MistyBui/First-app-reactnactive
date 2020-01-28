@@ -1,5 +1,6 @@
 import React from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
+import {View, Text} from 'native-base';
+import {Image} from 'react-native';
 
 const mediaUrl ='http://media.mw.metropolia.fi/wbma/uploads/';
 
@@ -11,7 +12,7 @@ const Single = (props) => {
 
   console.log(file, key);
   return (
-    <View style={styles.container}>
+    <View>
       <Text>Title: {JSON.stringify(navigation.getParam('title', 'title'))}</Text>
       <Image
         style={{width: 150, height: 150}}
@@ -21,14 +22,6 @@ const Single = (props) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 40,
-  },
-});
+
 
 export default Single;

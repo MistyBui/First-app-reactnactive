@@ -1,33 +1,38 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import PropTypes from 'prop-types';
-import AsyncImage from './AsyncImage';
-
+import {Container, Content, ListItem, Thumbnail, Text, Left, Body, Right, Button } from 'native-base';
 const mediaUrl ='http://media.mw.metropolia.fi/wbma/uploads/';
 
-const ListItem = (props) => {
+const ListItems = (props) => {
   const singleMedia = props.singleMedia;
   return (
-    <TouchableOpacity
-      style={styles.touch}
-      onPress={
-        () => {
-          props.navigation.push('Single',{
-              file_id: singleMedia.file_id,
-              title: singleMedia.title,
-              filename: singleMedia.filename
-          });
-        }
-      }>
-      <AsyncImage
-        style={{width: 100, height: 100}}
-        source={{uri: mediaUrl + props.singleMedia.filename}}
-      />
-      <View style={styles.text}>
-        <Text style={{fontWeight: 'bold'}}>{singleMedia.title}</Text>
-        <Text style={{textAlign:"justify", width: 270}}>{singleMedia.description}</Text>
-      </View>
-    </TouchableOpacity>
+
+          <ListItem thumbnail>
+            <Left>
+              <Thumbnail square
+                source={{uri: mediaUrl + props.singleMedia.filename}}
+              />
+            </Left>
+            <Body>
+              <Text>{singleMedia.title}</Text>
+              <Text>{singleMedia.description}</Text>
+            </Body>
+            <Right>
+            <Button rounded info
+            onPress={
+              () => {
+                props.navigation.push('Single',{
+                    file_id: singleMedia.file_id,
+                    title: singleMedia.title,
+                    filename: singleMedia.filename
+                });
+              }
+            }>
+                  <Text>View</Text>
+              </Button>
+            </Right>
+          </ListItem>
+
   )
 }
 ListItem.propTypes = {
@@ -35,25 +40,6 @@ ListItem.propTypes = {
 };
 
 
-const styles = StyleSheet.create({
 
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
 
-  },
-  touch: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor:'#808080',
-    marginBottom: 5,
-    padding: 10,
- },
- text: {
-    paddingLeft:10,
- }
-});
-
-export default ListItem;
+export default ListItems;
