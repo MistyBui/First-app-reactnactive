@@ -2,15 +2,33 @@ import React, {useState,useEffect} from 'react';
 import { Card, Icon, CardItem, Container, Header, Left, Right, Body, Text, Button, Content, Title} from 'native-base';
 import {AsyncStorage, Image} from 'react-native';
 import PropTypes from 'prop-types';
-import { avatar } from '../hooks/APIHook';
-const mediaURL = 'http://media.mw.metropolia.fi/wbma/uploads/';
+import { fetchGET } from '../hooks/APIHook';
+import AsyncImage from '../components/AsyncImage';
+import {Dimensions} from 'react-native';
 
+const mediaURL = 'http://media.mw.metropolia.fi/wbma/uploads/';
+const deviceHeight = Dimensions.get('window').height;
 
 const Profile = (props) => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({
+    userdata: {},
+    avatar: '',
+  });
   const userToState = async () => {
-    const userFromStorage = await AsyncStorage.getItem('user');
-    setUser(JSON.parse(userFromStorage));
+    try {
+      const userFromStorage = await AsyncStorage.getItem('user');
+      const uData = JSON.parse(userFromStorage);
+      const avatarPic = await fetchGET('tags', 'avatar_' + uData.user_id);
+      console.log('aPic', avatarPic[0].filename);
+      setUser((user) => (
+        {
+          userdata: uData,
+          avatar: avatarPic[0].filename,
+        }));
+    } catch (e) {
+      console.log('Profile error: ', e.message);
+    }
+
   };
   useEffect(()=>{
     userToState();
@@ -21,52 +39,36 @@ const Profile = (props) => {
        props.navigation.navigate('Auth');
      };
 
-  const filename = async () => {
-    const userJson = await AsyncStorage.getItem('user');
-    console.log(userJson);
-    const user = JSON.parse(userJson);
-    console.log(user);
-    const tag = await avatar(user.user_id);
-    console.log(tag);
-    user.avatarFilename = tag[0].filename;
-    setUser(() => {
-      return user;
-    });
-    };
-    useEffect(() => {
-      filename();
-    }, []);
-
   return (
     <Container>
-      <Header>
-        <Left/>
-        <Body>
-           <Title>Profile</Title>
-        </Body>
-        <Right />
-      </Header>
       <Content>
         <Card>
-        <CardItem>
-        <Left>
-              <Icon name='person' />
-              <Text>Username: {user.username}</Text>
-            </Left>
+        <CardItem header bordered>
+          <Icon name='person' />
+          <Text>Username: {user.userdata.username}</Text>
         </CardItem>
         <CardItem cardBody>
-          <Image
-              style={{height: 500, width: 'auto', flex: 1}}
-              source={{uri: mediaURL + user.avatarFilename}}
-            />
+          <AsyncImage
+              style={{
+                width: '100%',
+                height: deviceHeight / 2,
+              }}
+              spinnerColor='#777'
+              source={{uri: mediaURL + user.avatar}} />
         </CardItem>
         <CardItem>
           <Body>
-            <Text>Fullname:{user.full_name}</Text>
-            <Text>Email:{user.email}</Text>
+            <Text>Fullname:{user.userdata.full_name}</Text>
+            <Text numberOfLines={1}>Email:{user.userdata.email}</Text>
           </Body>
         </CardItem>
-        <Button block onPress={signOutAsync}><Text>Sign Out</Text></Button>
+        <CardItem footer bordered>
+            <Body>
+              <Button full onPress={signOutAsync}>
+                <Text>Logout</Text>
+              </Button>
+            </Body>
+          </CardItem>
         </Card>
       </Content>
     </Container>

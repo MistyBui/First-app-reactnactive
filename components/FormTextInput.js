@@ -1,14 +1,18 @@
 import React from 'react';
-import {StyleSheet, TextInput} from 'react-native';
 import PropTypes from 'prop-types';
-
+import {Input, Item, Badge, Text, Content} from 'native-base';
 
 const FormTextInput = (props) => {
-  const {...otherProps} = props;
+  const {error,...otherProps} = props;
   return (
-    <TextInput
-      {...otherProps}
-    />
+    <Content>
+      <Item error={error}>
+        <Input  {...otherProps}/>
+      </Item>
+      {error &&
+      <Badge><Text>{error}</Text></Badge>}
+    </Content>
+
   );
 };
 
