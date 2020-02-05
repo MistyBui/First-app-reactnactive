@@ -1,105 +1,153 @@
-import {useState, setState} from 'react';
+import {useState} from 'react';
 import validate from 'validate.js';
+import {fetchGET} from './APIHook';
 
-const emptyError = {
-  username: undefined,
-  email: undefined,
-  password: undefined,
-  fullname: undefined,
-  fetch: undefined,
-}
-const validator = {
+const constraints = {
   username: {
+    presence: {
+      message: 'cannot be blank.',
+    },
     length: {
       minimum: 3,
-      message: 'minimum 3 characters',
-    },
-  },
-  password: {
-    length: {
-      minimum: 5,
-      message: 'minimum 5 characters',
+      message: 'must be at least 3 characters',
     },
   },
   email: {
     presence: {
-      message: 'required!',
+      message: 'cannot be blank.',
     },
     email: {
-      message: "doesn't look like a valid email",
-      }
+      message: 'not valid.',
+    },
   },
   fullname: {
-    format: {
-      pattern: "/^[A-Za-z]+$/",
-      flags: "i",
-      message: "can only contain a-z"
+    presence: 'cannot be blank.',
+  },
+  password: {
+    length: {
+      minimum: 5,
+      message: 'must be at least 5 characters',
+    },
+  },
+  confirmPassword: {
+    presence: 'cannot be blank.',
+    equality: {
+      attribute: 'password',
     },
   },
 };
 
 const useSignUpForm = () => {
   const [inputs, setInputs] = useState({});
-  const [errors, setErrors] = useState(emptyError)
+  const [errors, setErrors] = useState({});
   const handleUsernameChange = (text) => {
-
-    setInputs(inputs =>
+    setInputs((inputs) =>
       ({
         ...inputs,
         username: text,
       }));
   };
-  const handleEmailChange = (text) => {
-    setInputs(inputs =>
-      ({
-        ...inputs,
-        email: text,
-      }));
-  };
-  const handleFullnameChange = (text) => {
-    setInputs(inputs =>
-      ({
-        ...inputs,
-        full_name: text,
-      }));
-  };
+
   const handlePasswordChange = (text) => {
-    setInputs(inputs =>
+    setInputs((inputs) =>
       ({
         ...inputs,
         password: text,
       }));
   };
 
-  const validateField = (attr,value) =>{
-    try{
-    const valResult = validate({[attr]: value}, validator);
-    console.log('validate',valResult);
-    let valid= undefined;
-    if(valResult) {
-      valid = valResult[attr][0];
-    }
-    setErrors((errors) => ({
-      ...errors,
-      [attr]: valid,
-    }));
-  } catch (e){
-    console.log(e);
-  }
+  const handleConfirmPasswordChange = (text) => {
+    setInputs((inputs) =>
+      ({
+        ...inputs,
+        confirmPassword: text,
+      }));
   };
 
+  const handleEmailChange = (text) => {
+    setInputs((inputs) =>
+      ({
+        ...inputs,
+        email: text,
+      }));
+  };
+  const handleFullnameChange = (text) => {
+    setInputs((inputs) =>
+      ({
+        ...inputs,
+        full_name: text,
+      }));
+  };
 
+  const validateField = (attr) => {
+    const attrName = Object.keys(attr).pop(); // get the only or last item from array
+    const valResult = validate(attr, constraints);
+    console.log('valresult', valResult);
+    let valid = undefined;
+    if (valResult[attrName]) {
+      valid = valResult[attrName][0]; // get just the first message
+    }
+    setErrors((errors) =>
+      ({
+        ...errors,
+        [attrName]: valid,
+        fetch: undefined,
+      }));
+  };
+
+  const checkAvail = async () => {
+    const text = inputs.username;
+    try {
+      const result = await fetchGET('users/username', text);
+      console.log(result);
+      if (!result.available) {
+        setErrors((errors) =>
+          ({
+            ...errors,
+            username: 'Username not available.',
+          }));
+      }
+    } catch (e) {
+      setErrors((errors) =>
+        ({
+          ...errors,
+          fetch: e.message,
+        }));
+    }
+  };
+
+  const validateOnSend = (fields) => {
+    checkAvail();
+
+    for (const [key, value] of Object.entries(fields)) {
+      console.log(key, value);
+      validateField(value);
+    }
+
+    if (errors.username !== undefined ||
+      errors.email !== undefined ||
+      errors.full_name !== undefined ||
+      errors.password !== undefined ||
+      errors.confirmPassword !== undefined) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   return {
     handleUsernameChange,
+    handlePasswordChange,
+    handleConfirmPasswordChange,
     handleEmailChange,
     handleFullnameChange,
-    handlePasswordChange,
+    checkAvail,
     validateField,
+    validateOnSend,
     inputs,
-    errors
+    errors,
+    setErrors,
   };
 };
-
 
 export default useSignUpForm;
