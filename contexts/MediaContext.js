@@ -8,8 +8,10 @@ const mediaArray = [];
 
 const MediaProvider = (props) => {
   const [media, setMedia] = useState(mediaArray);
+  const [userMedia, setUserMedia] = useState(mediaArray);
+
   return (
-    <MediaContext.Provider value={[media, setMedia]}>
+    <MediaContext.Provider value={{media, setMedia, userMedia, setUserMedia}}>
       {props.children}
     </MediaContext.Provider>
   );

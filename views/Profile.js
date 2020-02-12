@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { fetchGET } from '../hooks/APIHook';
 import AsyncImage from '../components/AsyncImage';
 import {Dimensions} from 'react-native';
+import MyFiles from './MyFiles';
 
 const mediaURL = 'http://media.mw.metropolia.fi/wbma/uploads/';
 const deviceHeight = Dimensions.get('window').height;
@@ -63,12 +64,23 @@ const Profile = (props) => {
           </Body>
         </CardItem>
         <CardItem footer bordered>
-            <Body>
-              <Button full onPress={signOutAsync}>
-                <Text>Logout</Text>
-              </Button>
-            </Body>
-          </CardItem>
+          <Body>
+            <Button full onPress={
+              () => {
+                props.navigation.push('MyFiles');
+              }}>
+              <Text>My Files</Text>
+            </Button>
+          </Body>
+        </CardItem>
+        <CardItem footer bordered>
+          <Body>
+            <Button full onPress={signOutAsync}>
+              <Text>Logout</Text>
+            </Button>
+          </Body>
+        </CardItem>
+
         </Card>
       </Content>
     </Container>

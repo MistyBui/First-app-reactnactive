@@ -5,7 +5,9 @@ import {createStackNavigator} from 'react-navigation-stack';
 import Home from '../views/Home';
 import Profile from '../views/Profile';
 import Single from '../views/Single';
+import MyFiles from '../views/MyFiles';
 import Upload from '../views/Upload';
+import Modify from '../views/Modify';
 import AuthLoading from '../views/AuthLoading';
 import Login from '../views/Login';
 import { Icon } from 'native-base';
@@ -54,9 +56,16 @@ const StackNavigator = createStackNavigator(
     Single: {
       screen: Single,
     },
+    MyFiles: {
+      screen: MyFiles,
+    },
+    Modify: {
+      screen: Modify,
+    },
     Logout: {
       screen: Login,
     },
+
   },
 );
 

@@ -1,13 +1,6 @@
 import {useState, useEffect} from 'react';
 import {apiUrl} from '../constants/urlCons';
-const avatar = async (userId) => {
-  try {
-    const response = await fetch(apiUrl + 'tags/avatar_' + userId);
-    return await response.json();
-  } catch (e) {
-    console.log('error', e.message);
-    }
-};
+import { AsyncStorage } from 'react-native';
 
 const fetchGET = async (endpoint = '', params = '', token = '') => {
   const fetchOptions = {
@@ -44,25 +37,41 @@ const fetchPOST = async (endpoint = '', data = {}, token = '') => {
   return json;
 };
 
-const getAllMedia = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const fetchMedia = async () => {
-    try {
-      const json = await fetchGET('media/all');
-      const result = await Promise.all(json.files.map(async (item) => {
-        return await fetchGET('media', item.file_id);
-      }));
-      setData(result);
-      setLoading(false);
-    } catch (e) {
-      console.log('getAllMedia error', e.message);
-    }
+const fetchPUT = async (endpoint = '',params= {}, data = {}, token = '') => {
+  const fetchOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-access-token': token,
+    },
+    body: JSON.stringify(data),
   };
-  useEffect(() => {
-    fetchMedia();
-  }, []);
-  return [data, loading];
+  const response = await fetch(apiUrl + endpoint + params, fetchOptions);
+  const json = await response.json();
+  console.log(json);
+  if (response.status === 400 || response.status === 401) {
+    const message = Object.values(json).join();
+    throw new Error(message);
+  } else if (response.status > 299) {
+    throw new Error('fetchPUT error: ' + response.status);
+  }
+  return json;
+};
+
+const getAllMedia = async () => {
+  const json = await fetchGET('media/all');
+  const result = await Promise.all(json.files.map(async (item) => {
+    return await fetchGET('media', item.file_id);
+  }));
+  return result;
+};
+
+const getUserMedia = async (token) => {
+  const json = await fetchGET('media/user','', token);
+  const result = await Promise.all(json.map(async (item) => {
+    return await fetchGET('media', item.file_id);
+  }));
+  return result;
 };
 
 const fetchFormData = async (
@@ -86,4 +95,28 @@ const fetchFormData = async (
   return json;
 };
 
-export {getAllMedia, avatar, fetchGET, fetchPOST, fetchFormData};
+const getUser = async (id) =>{
+  try {
+    const token = await AsyncStorage.getItem('userToken');
+    return await fetchGET('users', id, token);
+  } catch {
+    console.log(e.message);
+  }
+};
+
+const fetchDELETE = async (endpoint = '', params = '', token = '') => {
+  const fetchOptions = {
+    method: 'DELETE',
+    headers: {
+      'x-access-token': token,
+    },
+  };
+  const response = await fetch(apiUrl + endpoint + '/' + params,
+      fetchOptions);
+  if (!response.ok) {
+    throw new Error('fetchDELETE error: ' + response.status);
+  }
+  return await response.json();
+};
+
+export {getAllMedia, getUser, fetchGET, fetchPOST, fetchFormData, getUserMedia, fetchDELETE};

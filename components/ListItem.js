@@ -1,45 +1,77 @@
 import React from 'react';
+import {
+  ListItem as BaseListItem,
+  Left,
+  Body,
+  Right,
+  Button,
+  Text,
+  Thumbnail,
+  H3,
+  Icon,
+} from 'native-base';
 import PropTypes from 'prop-types';
-import {Container, Content, ListItem, Thumbnail, Text, Left, Body, Right, Button } from 'native-base';
-const mediaUrl ='http://media.mw.metropolia.fi/wbma/uploads/';
+import {mediaURL} from '../constants/urlCons';
+import { AsyncStorage } from 'react-native';
+import { fetchDELETE } from '../hooks/APIHook';
 
-const ListItems = (props) => {
-  const singleMedia = props.singleMedia;
+
+const ListItem = (props) => {
   return (
-
-          <ListItem thumbnail>
-            <Left>
-              <Thumbnail square
-                source={{uri: mediaUrl + props.singleMedia.filename}}
-              />
-            </Left>
-            <Body>
-              <Text>{singleMedia.title}</Text>
-              <Text>{singleMedia.description}</Text>
-            </Body>
-            <Right>
-            <Button rounded info
-            onPress={
-              () => {
-                props.navigation.push('Single',{
-                    file_id: singleMedia.file_id,
-                    title: singleMedia.title,
-                    filename: singleMedia.filename
-                });
-              }
-            }>
-                  <Text>View</Text>
-              </Button>
-            </Right>
-          </ListItem>
-
-  )
-}
-ListItem.propTypes = {
-  singleMedia: PropTypes.object,
+    <BaseListItem thumbnail>
+      <Left>
+        <Thumbnail
+          square
+          source={{uri: mediaURL + props.singleMedia.thumbnails.w160}}
+        />
+      </Left>
+      <Body>
+        <H3 numberOfLines={1}>{props.singleMedia.title}</H3>
+        <Text numberOfLines={1}>{props.singleMedia.description}</Text>
+      </Body>
+      <Right>
+        <Button onPress={
+          () => {
+            props.navigation.push('Single', {file: props.singleMedia});
+          }
+        }>
+          <Text>View</Text>
+        </Button>
+        {props.mode === 'myfiles' &&
+        <>
+        <Button
+          full warning
+          onPress={
+            () => {
+              props.navigation.push('Modify', {file: props.singleMedia});
+            }
+          }>
+          <Icon name='create' />
+        </Button>
+        <Button
+          full danger
+          onPress={ async () => {
+            const token = await AsyncStorage.getItem('userToken');
+            const del = await fetchDELETE('media',props.singleMedia.file_id,token);
+            if(del.message){
+              props.getMedia(props.mode);
+            }
+          }}
+        >
+          <Icon name='trash' />
+        </Button>
+        </>
+      }
+      </Right>
+    </BaseListItem>
+  );
 };
 
+ListItem.propTypes = {
+  singleMedia: PropTypes.object,
+  navigation: PropTypes.object,
+  mode: PropTypes.string,
+  getMedia: PropTypes.func,
+};
 
-
-
-export default ListItems;
+export default ListItem;

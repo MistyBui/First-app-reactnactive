@@ -4,9 +4,10 @@ import {fetchFormData, getAllMedia} from './APIHook';
 
 
 const useUploadForm = () => {
-  const [loading, setLoading] = useState(false);
   const [inputs, setInputs] = useState({});
   const [errors,setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
 
   const handleTitleChange = (text) => {
     setInputs((inputs) =>

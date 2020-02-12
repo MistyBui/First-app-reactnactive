@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Container,
   Content,
@@ -13,35 +13,73 @@ import {
 import PropTypes from 'prop-types';
 import AsyncImage from '../components/AsyncImage';
 import {Dimensions} from 'react-native';
+import { Video } from 'expo-av';
+import {mediaURL} from '../constants/urlCons';
+import { getUser } from '../hooks/APIHook';
 
-const mediaUrl ='http://media.mw.metropolia.fi/wbma/uploads/';
+
 const deviceHeight = Dimensions.get('window').height;
 
 const Single = (props) => {
   const { navigation } = props;
-  const file = navigation.getParam('filename', 'file');
-  const key= navigation.getParam('file_id','noid');
+  const [owner, setOwner] = useState({});
+  const file = navigation.state.params.file;
 
-  console.log(file, key);
+  const getOwner = async () => {
+    const owner = await getUser(file.user_id);
+    setOwner(owner);
+  };
+
+  useEffect(() => {
+    getOwner();
+  },[]);
+
   return (
     <Container>
       <Content>
         <Card>
           <CardItem>
-            <AsyncImage
+            {file.media_type === 'image' ?
+            (<AsyncImage
               style={{
                 width: '100%',
                 height: deviceHeight / 2,
               }}
               spinnerColor='#777'
-              source={{uri: mediaUrl + file}}
-            />
+              source={{uri: mediaURL + file.filename}}
+            />)
+          :
+            (<Video
+              source={{uri: mediaURL + file.filename}}
+              rate={1.0}
+              volumn={1.0}
+              isMuted={false}
+              resizeMode='contain'
+              shouldPlay
+              isLooping
+              useNativeControls
+              style={{width:'100%', height: deviceHeight/2}}
+            />)
+          }
             </CardItem>
           <CardItem>
             <Left>
               <Icon name='image'/>
               <Body>
-                <H3>{JSON.stringify(navigation.getParam('title', 'title'))}</H3>
+                <H3>{file.title}</H3>
+                <Text>{file.description}</Text>
+                <Text>By {file.user_id}</Text>
+              </Body>
+            </Left>
+          </CardItem>
+          <CardItem>
+            <Left>
+              <Icon name='person' />
+              <Body>
+                <Text>By {owner.username} ({owner.email})</Text>
+                {owner.full_name &&
+                  <Text>{owner.full_name}</Text>
+                }
               </Body>
             </Left>
           </CardItem>
